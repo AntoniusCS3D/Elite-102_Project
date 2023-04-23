@@ -1,3 +1,6 @@
+import mysql.connector
+
+
 def check_balance():
     print("Please select the account that you would like to check.")
     print_accounts()
