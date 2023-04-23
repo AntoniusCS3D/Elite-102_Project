@@ -61,14 +61,34 @@ def check_int(num):
     return True
 
 def login(user, password):
+    #https://stackoverflow.com/questions/5010042/mysql-get-column-name-or-alias-from-query
     global mycursor
-    if(check_username(user)):
-        print("Username found")
     mycursor = mydb.cursor(buffered=True)
     mycursor.execute(f"SELECT * FROM example.userbase WHERE Username = '{user}' AND Password = '{password}';")
-    row = mycursor.fetchall()
-    if(row):
+    values = mycursor.fetchone()
+    if(not (values == None)):
+        field_name = [i[0] for i in mycursor.description]
+        row = dict(zip(field_name, values))
         print("Login success")
+        user_page(row['User_ID'])
+    return
+
+def user_page(user_id):
+    print(f"Logged in: {user_id}")
+    clear_page()
+
+    for i in range(4):
+        root.grid_columnconfigure(i, weight = 1)
+    for i in range(5):
+        root.grid_rowconfigure(i, weight = 1)
+
+    #Changes in position of title will affect everything else
+    #Modify main_row and main_col to change row and col of all elements
+    main_row = 1
+    main_col = 1
+    #Creates back button
+    logout_button = tk.Button(root, text = "Logout", command = lambda : main_page())
+    logout_button.grid(row = main_row + 1, column = main_col, columnspan = 2, padx = 100, pady = 75, sticky = tk.EW + tk.N)
     return
 
 def create_new_user(name, user, password, pin):
@@ -86,8 +106,6 @@ def create_new_user(name, user, password, pin):
     sql = sql % val
     mycursor.execute(sql)
     print("Success!")
-    #mycursor.execute(f"DELETE FROM `example`.`userbase` WHERE (`User_ID` = '{generate_id}');")
-    #print("Deleted!")
     mydb.commit()
     return
 
@@ -192,19 +210,6 @@ def create_user_page():
     return
 
 def main():
-    # print("Create new user.")
-    # add new entry into SQL
-    # username = input("User: ")
-    # password = input("Password: ")
-    # if(username == "user"):
-    #     if(password == "pass"):
-    #         print("Login success.")
-    # create_account()
-    # bank_methods.delete_account()
-    # bank_methods.transfer()
-    # bank_methods.deposit()
-    # bank_methods.withdrawal()
-
     #Basic TKinter GUI fundamental setup
     #https://stackoverflow.com/questions/22421888/tkinter-windows-without-title-bar-but-resizable
     #root.overrideredirect(True)
@@ -220,7 +225,7 @@ def main():
     #Creates the home page
     main_page()
 
-    #Runs GUI object
+    #Runs GUI
     root.mainloop()
 
 if __name__=="__main__":
