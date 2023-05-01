@@ -173,7 +173,7 @@ def create_new_user(name, user, password, pin):
     return
 
 def create_user_and_back(name, user, password, pin):
-    create_account_and_back(name, user, password, pin)
+    create_new_user(name, user, password, pin)
     main_page()
 
 def withdrawal_and_back(user_id, account_num, amount):
