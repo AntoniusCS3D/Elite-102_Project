@@ -317,8 +317,13 @@ def transactionhistory_page(user_id, account_num):
     else:
         empty_label = tk.Label(root, text = "No transaction found!", bg = "white")
         empty_label.grid(row = main_row, column = main_col, columnspan = 2, sticky = tk.EW)
+    mycursor.execute(f"SELECT * FROM example.accounts WHERE Account_number = {account_num};")
+    values = mycursor.fetchone()
+    if(values):
+        field_name = [i[0] for i in mycursor.description]
+        row = dict(zip(field_name, values))
     #Show balance
-    balance_label = tk.Label(root, text = f"Balance: ${transaction['Balance']}", bg = "white")
+    balance_label = tk.Label(root, text = f"Balance: ${row['Balance']}", bg = "white")
     balance_label.grid(row = main_row + 1, column = main_col, columnspan = 2, sticky = tk.EW + tk.N)
     #Create new withdraw button
     withdraw_button = tk.Button(root, text = "Withdraw", command = lambda : withdrawal_page(user_id, account_num))
